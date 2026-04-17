@@ -7,8 +7,10 @@ export const dynamic = "force-dynamic";
 import {
   STATUS_LABELS,
   STATUS_COLORS,
+  SOURCE_LABELS,
   APPLICATION_STATUSES,
   type ApplicationStatus,
+  type ApplicationSource,
 } from "@/db/schema";
 import {
   Card,
@@ -27,7 +29,7 @@ import {
   updateApplication,
   deleteApplication,
 } from "@/app/(dashboard)/applications/actions";
-import { ExternalLink, MapPin, DollarSign, Calendar } from "lucide-react";
+import { ExternalLink, MapPin, DollarSign, Calendar, Globe } from "lucide-react";
 import Link from "next/link";
 
 interface PageProps {
@@ -102,6 +104,12 @@ export default async function ApplicationDetailPage({ params }: PageProps) {
               <span className="flex items-center gap-1">
                 <MapPin className="h-3.5 w-3.5" />
                 {app.location}
+              </span>
+            )}
+            {app.source && (
+              <span className="flex items-center gap-1">
+                <Globe className="h-3.5 w-3.5" />
+                {SOURCE_LABELS[app.source as ApplicationSource]}
               </span>
             )}
             {salary && (

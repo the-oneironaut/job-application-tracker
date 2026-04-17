@@ -24,6 +24,17 @@ export const applications = sqliteTable("applications", {
   salaryMax: integer("salary_max"),
   salaryCurrency: text("salary_currency").default("USD"),
   location: text("location"),
+  source: text("source", {
+    enum: [
+      "linkedin",
+      "indeed",
+      "naukri",
+      "career_page",
+      "referral",
+      "inbound",
+      "other",
+    ],
+  }),
   url: text("url"),
   createdAt: text("created_at").notNull(),
   updatedAt: text("updated_at").notNull(),
@@ -69,6 +80,28 @@ export const STATUS_LABELS: Record<ApplicationStatus, string> = {
   rejected: "Rejected",
   withdrawn: "Withdrawn",
   ghosted: "Ghosted",
+};
+
+export const APPLICATION_SOURCES = [
+  "linkedin",
+  "indeed",
+  "naukri",
+  "career_page",
+  "referral",
+  "inbound",
+  "other",
+] as const;
+
+export type ApplicationSource = (typeof APPLICATION_SOURCES)[number];
+
+export const SOURCE_LABELS: Record<ApplicationSource, string> = {
+  linkedin: "LinkedIn",
+  indeed: "Indeed",
+  naukri: "Naukri",
+  career_page: "Career Page",
+  referral: "Referral",
+  inbound: "Inbound",
+  other: "Other",
 };
 
 export const STATUS_COLORS: Record<ApplicationStatus, string> = {

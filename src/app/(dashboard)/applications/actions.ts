@@ -2,7 +2,7 @@
 
 import { db } from "@/db";
 import { applications, notes } from "@/db/schema";
-import type { ApplicationStatus } from "@/db/schema";
+import type { ApplicationStatus, ApplicationSource } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getSession } from "@/lib/auth";
@@ -33,6 +33,7 @@ export async function createApplication(formData: FormData) {
   const salaryMax = formData.get("salaryMax") ? Number(formData.get("salaryMax")) : null;
   const salaryCurrency = (formData.get("salaryCurrency") as string) || "USD";
   const location = (formData.get("location") as string) || null;
+  const source = (formData.get("source") as ApplicationSource) || null;
   const url = (formData.get("url") as string) || null;
 
   if (!company || !role) {
@@ -52,6 +53,7 @@ export async function createApplication(formData: FormData) {
     salaryMax,
     salaryCurrency,
     location,
+    source,
     url,
     createdAt: timestamp,
     updatedAt: timestamp,
@@ -73,6 +75,7 @@ export async function updateApplication(id: string, formData: FormData) {
   const salaryMax = formData.get("salaryMax") ? Number(formData.get("salaryMax")) : null;
   const salaryCurrency = (formData.get("salaryCurrency") as string) || "USD";
   const location = (formData.get("location") as string) || null;
+  const source = (formData.get("source") as ApplicationSource) || null;
   const url = (formData.get("url") as string) || null;
 
   if (!company || !role) {
@@ -90,6 +93,7 @@ export async function updateApplication(id: string, formData: FormData) {
       salaryMax,
       salaryCurrency,
       location,
+      source,
       url,
       updatedAt: now(),
     })

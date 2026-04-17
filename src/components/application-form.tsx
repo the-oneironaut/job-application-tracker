@@ -12,9 +12,12 @@ import {
 } from "@/components/ui/select";
 import {
   APPLICATION_STATUSES,
+  APPLICATION_SOURCES,
   STATUS_LABELS,
+  SOURCE_LABELS,
   type Application,
   type ApplicationStatus,
+  type ApplicationSource,
 } from "@/db/schema";
 import { Loader2 } from "lucide-react";
 import { useActionState } from "react";
@@ -124,7 +127,7 @@ export function ApplicationForm({
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-3">
         <div className="space-y-2">
           <Label htmlFor="location">Location</Label>
           <Input
@@ -133,6 +136,24 @@ export function ApplicationForm({
             defaultValue={application?.location ?? ""}
             placeholder="e.g. Remote, New York, NY"
           />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="source">Source</Label>
+          <Select
+            name="source"
+            defaultValue={application?.source || ""}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Where did you find it?" />
+            </SelectTrigger>
+            <SelectContent>
+              {APPLICATION_SOURCES.map((s) => (
+                <SelectItem key={s} value={s}>
+                  {SOURCE_LABELS[s]}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <div className="space-y-2">
           <Label htmlFor="url">Job Posting URL</Label>

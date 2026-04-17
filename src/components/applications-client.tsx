@@ -5,8 +5,10 @@ import Link from "next/link";
 import {
   type Application,
   type ApplicationStatus,
+  type ApplicationSource,
   STATUS_LABELS,
   STATUS_COLORS,
+  SOURCE_LABELS,
   APPLICATION_STATUSES,
 } from "@/db/schema";
 import { Badge } from "@/components/ui/badge";
@@ -161,6 +163,7 @@ export function ApplicationsClient({ applications }: ApplicationsClientProps) {
                 <TableHead>Company</TableHead>
                 <TableHead>Role</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Source</TableHead>
                 <TableHead>Date Applied</TableHead>
                 <TableHead>Salary</TableHead>
                 <TableHead>Location</TableHead>
@@ -169,7 +172,7 @@ export function ApplicationsClient({ applications }: ApplicationsClientProps) {
             <TableBody>
               {filtered.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8">
+                  <TableCell colSpan={7} className="text-center py-8">
                     <p className="text-muted-foreground">No applications found</p>
                   </TableCell>
                 </TableRow>
@@ -206,6 +209,9 @@ export function ApplicationsClient({ applications }: ApplicationsClientProps) {
                       >
                         {STATUS_LABELS[app.status as ApplicationStatus]}
                       </Badge>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {app.source ? SOURCE_LABELS[app.source as ApplicationSource] : "—"}
                     </TableCell>
                     <TableCell className="text-muted-foreground">
                       {app.dateApplied}
