@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { verifyPassword, signToken, setSessionCookie } from "@/lib/auth";
+import { verifyCredentials, signToken, setSessionCookie } from "@/lib/auth";
 
 export async function POST(request: Request) {
   try {
@@ -12,22 +12,15 @@ export async function POST(request: Request) {
       );
     }
 
-    if (email !== process.env.AUTH_EMAIL) {
+    const user = await verifyCredentials(email, password);
+    if (!user) {
       return NextResponse.json(
         { error: "Invalid credentials" },
         { status: 401 }
       );
     }
 
-    const isValid = await verifyPassword(password);
-    if (!isValid) {
-      return NextResponse.json(
-        { error: "Invalid credentials" },
-        { status: 401 }
-      );
-    }
-
-    const token = await signToken({ email });
+    const token = await signToken({ userId: user.id, email: user.email });
     await setSessionCookie(token);
 
     return NextResponse.json({ success: true });

@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { applications } from "@/db/schema";
-import { desc, count, sql } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
 import {
@@ -21,6 +21,8 @@ import Link from "next/link";
 import { StatusChart } from "@/components/status-chart";
 import { TimelineChart } from "@/components/timeline-chart";
 import { format } from "date-fns";
+import { getSession } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 const ACTIVE_STATUSES: ApplicationStatus[] = [
   "applied",
@@ -40,7 +42,10 @@ const RESPONSE_STATUSES: ApplicationStatus[] = [
 ];
 
 export default async function DashboardPage() {
-  const allApps = await db.select().from(applications).orderBy(desc(applications.createdAt));
+  const session = await getSession();
+  if (!session) redirect("/login");
+
+  const allApps = await db.select().from(applications).where(eq(applications.userId, session.userId)).orderBy(desc(applications.createdAt));
 
   const total = allApps.length;
   const active = allApps.filter((a) => ACTIVE_STATUSES.includes(a.status as ApplicationStatus)).length;

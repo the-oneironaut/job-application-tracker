@@ -10,6 +10,7 @@
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "db:generate": "drizzle-kit generate",
+    "db:seed-user": "tsx scripts/seed-user.ts",
     "hash-password": "node -e \"const c=require('crypto');const p=process.argv[1];console.log(c.createHash('sha256').update(p).digest('hex'));\""
   },
   "dependencies": {
@@ -37,10 +38,12 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^16.4.0",
     "drizzle-kit": "^0.31.10",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
     "tailwindcss": "^4",
+    "tsx": "^4.19.0",
     "typescript": "^5"
   }
 }

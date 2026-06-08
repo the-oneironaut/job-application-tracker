@@ -1,7 +1,16 @@
 import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 
+export const users = sqliteTable("users", {
+  id: text("id").primaryKey(),
+  email: text("email").notNull().unique(),
+  passwordHash: text("password_hash").notNull(),
+  name: text("name").notNull(),
+  createdAt: text("created_at").notNull(),
+});
+
 export const applications = sqliteTable("applications", {
   id: text("id").primaryKey(),
+  userId: text("user_id").references(() => users.id),
   company: text("company").notNull(),
   role: text("role").notNull(),
   status: text("status", {
@@ -51,6 +60,8 @@ export const notes = sqliteTable("notes", {
   createdAt: text("created_at").notNull(),
 });
 
+export type User = typeof users.$inferSelect;
+export type NewUser = typeof users.$inferInsert;
 export type Application = typeof applications.$inferSelect;
 export type NewApplication = typeof applications.$inferInsert;
 export type Note = typeof notes.$inferSelect;

@@ -3,7 +3,7 @@
 import { db } from "@/db";
 import { applications, notes } from "@/db/schema";
 import type { ApplicationStatus, ApplicationSource } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
@@ -23,7 +23,7 @@ async function requireAuth() {
 }
 
 export async function createApplication(formData: FormData) {
-  await requireAuth();
+  const session = await requireAuth();
 
   const company = formData.get("company") as string;
   const role = formData.get("role") as string;
@@ -45,6 +45,7 @@ export async function createApplication(formData: FormData) {
 
   await db.insert(applications).values({
     id,
+    userId: session.userId,
     company,
     role,
     status,
@@ -65,7 +66,7 @@ export async function createApplication(formData: FormData) {
 }
 
 export async function updateApplication(id: string, formData: FormData) {
-  await requireAuth();
+  const session = await requireAuth();
 
   const company = formData.get("company") as string;
   const role = formData.get("role") as string;
@@ -97,7 +98,7 @@ export async function updateApplication(id: string, formData: FormData) {
       url,
       updatedAt: now(),
     })
-    .where(eq(applications.id, id));
+    .where(and(eq(applications.id, id), eq(applications.userId, session.userId)));
 
   revalidatePath("/");
   revalidatePath("/applications");
@@ -105,12 +106,12 @@ export async function updateApplication(id: string, formData: FormData) {
 }
 
 export async function updateApplicationStatus(id: string, status: ApplicationStatus) {
-  await requireAuth();
+  const session = await requireAuth();
 
   await db
     .update(applications)
     .set({ status, updatedAt: now() })
-    .where(eq(applications.id, id));
+    .where(and(eq(applications.id, id), eq(applications.userId, session.userId)));
 
   revalidatePath("/");
   revalidatePath("/applications");
@@ -118,9 +119,9 @@ export async function updateApplicationStatus(id: string, status: ApplicationSta
 }
 
 export async function deleteApplication(id: string) {
-  await requireAuth();
+  const session = await requireAuth();
 
-  await db.delete(applications).where(eq(applications.id, id));
+  await db.delete(applications).where(and(eq(applications.id, id), eq(applications.userId, session.userId)));
 
   revalidatePath("/");
   revalidatePath("/applications");

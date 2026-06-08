@@ -1,7 +1,9 @@
 import { db } from "@/db";
 import { applications, notes } from "@/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and } from "drizzle-orm";
 import { notFound } from "next/navigation";
+import { getSession } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 import {
@@ -38,11 +40,13 @@ interface PageProps {
 
 export default async function ApplicationDetailPage({ params }: PageProps) {
   const { id } = await params;
+  const session = await getSession();
+  if (!session) redirect("/login");
 
   const app = await db
     .select()
     .from(applications)
-    .where(eq(applications.id, id))
+    .where(and(eq(applications.id, id), eq(applications.userId, session.userId)))
     .get();
 
   if (!app) notFound();
